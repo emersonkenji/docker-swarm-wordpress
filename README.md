@@ -17,7 +17,7 @@ Make sure you have a docker swarm cluster running. Then follow below commands:
 
 ```bash
 # Clode the git repo
-git clone https://github.com/iiriix/docker-swarm-wordpress
+git clone https://github.com/emersonkenji/docker-swarm-wordpress
 cd docker-swarm-wordpress
 
 # Change 'example.com' to your own domain name
