@@ -114,7 +114,7 @@ volumes:
        device: /data/mysql_data_colorspro
 
 networks:
-  nw-web:
+  proxy:
     external: true
   nw-backend:
     external: true
