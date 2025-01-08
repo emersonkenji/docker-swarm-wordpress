@@ -53,10 +53,10 @@ services:
 
   nginx:
     # image: nginx:latest
-    # deploy:
     build:
       context: .  # O diretório onde está o Dockerfile
       dockerfile: Dockerfile
+    deploy:
       replicas: 1
       update_config:
         parallelism: 1
