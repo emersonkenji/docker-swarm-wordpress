@@ -1,0 +1,9 @@
+# Usar a imagem base do Nginx
+FROM nginx:latest
+
+# Instalar o módulo necessário para suportar FastCGI
+RUN apt-get update && apt-get install -y libnginx-mod-http-fastcgi
+
+# Copiar os arquivos de configuração personalizados para o contêiner
+COPY apps/nginx/nginx_conf/nginx.conf /etc/nginx/nginx.conf
+COPY apps/nginx/nginx_conf/conf.d/default.conf /etc/nginx/conf.d/default.conf

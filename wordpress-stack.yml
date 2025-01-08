@@ -52,8 +52,11 @@ services:
       - nw-backend    
 
   nginx:
-    image: nginx:latest
-    deploy:
+    # image: nginx:latest
+    # deploy:
+    build:
+      context: .  # O diretório onde está o Dockerfile
+      dockerfile: Dockerfile
       replicas: 1
       update_config:
         parallelism: 1
