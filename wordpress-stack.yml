@@ -53,7 +53,7 @@ services:
       - nw-backend    
 
   nginx:
-    image: nginx:latest
+    image: iiriix/nginx-wp:latest
     deploy:
       replicas: 1
       update_config:
