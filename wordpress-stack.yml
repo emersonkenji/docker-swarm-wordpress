@@ -43,6 +43,9 @@ services:
         WORDPRESS_DB_PASSWORD: wordpress
         WORDPRESS_DB_NAME: wordpress
         WORDPRESS_TABLE_PREFIX: wp_
+        WORDPRESS_CONFIG_EXTRA: |
+          define('WP_HOME','https://colorspro.com.br');
+          define('WP_SITEURL','https://colorspro.com.br');
         # WORDPRESS_DEBUG: 1
     depends_on:
       - mysql
@@ -73,7 +76,7 @@ services:
       - traefik.http.routers.nginx_colorspro.entrypoints=websecure
       - traefik.http.routers.nginx_colorspro.tls=true
       - traefik.http.routers.nginx_colorspro.service=nginx_colorspro
-      - traefik.http.services.nginx_colorspro.loadbalancer.server.port=9000  
+      - traefik.http.services.nginx_colorspro.loadbalancer.server.port=80 
       # labels:
       #   - "traefik.enable=true"
       #   - "traefik.docker.network=proxy"
