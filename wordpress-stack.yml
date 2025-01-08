@@ -68,36 +68,28 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=proxy"
-        - "traefik.http.services.nginx.loadbalancer.server.port=80"
-        - "traefik.http.routers.nginx.rule=Host(`example.com`)"
-        - "traefik.http.routers.nginx.entrypoints=web,websecure"
-        - "traefik.http.routers.nginx.tls=true"
-        - "traefik.http.routers.nginx.tls.certresolver=le"  
-      # labels:
-      #   - "traefik.enable=true"
-      #   - "traefik.docker.network=proxy"
-      #   - "traefik.http.services.myrouter-01.loadbalancer.server.port=80"
-      #   ### Middlewares
-      #   # https-redir
-      #   - "traefik.http.middlewares.https-redir.redirectscheme.scheme=https"
-      #   - "traefik.http.middlewares.https-redir.redirectscheme.permanent=true"
-      #   # www-redir
-      #   - "traefik.http.middlewares.www-redir.redirectregex.regex=^https://www.(.*)"
-      #   - "traefik.http.middlewares.www-redir.redirectregex.replacement=https://$${1}"
-      #   - "traefik.http.middlewares.www-redir.redirectregex.permanent=true"
-      #   ### Entrypoints
-      #   # web
-      #   - "traefik.http.routers.myrouter-01.rule=Host(`example.com`, `www.example.com`)"
-      #   - "traefik.http.routers.myrouter-01.entrypoints=web"
-      #   - "traefik.http.routers.myrouter-01.middlewares=https-redir@docker"
-      #   # websecure
-      #   - "traefik.http.routers.myrouter-02.rule=Host(`example.com`, `www.example.com`)"
-      #   - "traefik.http.routers.myrouter-02.entrypoints=websecure"
-      #   - "traefik.http.routers.myrouter-02.middlewares=www-redir@docker"
-      #   - "traefik.http.routers.myrouter-02.tls=true"
-      #   # - "traefik.http.routers.myrouter-02.tls.certresolver=myCloudflare"
-      #   - "traefik.http.routers.myrouter-02.tls.domains[0].main=example.com"
-      #   - "traefik.http.routers.myrouter-02.tls.domains[0].sans=*.example.com"
+        - "traefik.http.services.myrouter-01.loadbalancer.server.port=80"
+        ### Middlewares
+        # https-redir
+        - "traefik.http.middlewares.https-redir.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.https-redir.redirectscheme.permanent=true"
+        # www-redir
+        - "traefik.http.middlewares.www-redir.redirectregex.regex=^https://www.(.*)"
+        - "traefik.http.middlewares.www-redir.redirectregex.replacement=https://$${1}"
+        - "traefik.http.middlewares.www-redir.redirectregex.permanent=true"
+        ### Entrypoints
+        # web
+        - "traefik.http.routers.myrouter-01.rule=Host(`example.com`, `www.example.com`)"
+        - "traefik.http.routers.myrouter-01.entrypoints=web"
+        - "traefik.http.routers.myrouter-01.middlewares=https-redir@docker"
+        # websecure
+        - "traefik.http.routers.myrouter-02.rule=Host(`example.com`, `www.example.com`)"
+        - "traefik.http.routers.myrouter-02.entrypoints=websecure"
+        - "traefik.http.routers.myrouter-02.middlewares=www-redir@docker"
+        - "traefik.http.routers.myrouter-02.tls=true"
+        - "traefik.http.routers.myrouter-02.tls.certresolver=myCloudflare"
+        - "traefik.http.routers.myrouter-02.tls.domains[0].main=example.com"
+        - "traefik.http.routers.myrouter-02.tls.domains[0].sans=*.example.com"
     depends_on:
       - wordpress
     volumes:
