@@ -17,10 +17,10 @@ services:
       labels:
         - "traefik.enable=false"
     environment:
-        MYSQL_DATABASE: wordpress
-        MYSQL_USER: wordpress
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -47,22 +47,23 @@ services:
       labels:
         - "traefik.enable=false"
     environment:
-        WORDPRESS_DB_HOST: mysql
-        WORDPRESS_DB_USER: wordpress
-        WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-        WORDPRESS_DB_NAME: wordpress
-        WORDPRESS_TABLE_PREFIX: wp_
-        WORDPRESS_CONFIG_EXTRA: |
-          define('WP_HOME','https://${DOMAIN_NAME}');
-          define('WP_SITEURL','https://${DOMAIN_NAME}');
-          define('WP_REDIS_HOST', 'redis');
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME','https://${DOMAIN_NAME}');
+        define('WP_SITEURL','https://${DOMAIN_NAME}');
+        define('WP_REDIS_HOST', 'redis');
     depends_on:
       - mysql
     volumes:
       - wp_data:/var/www/html
+      - ./srv/sites/${DOMAIN_NAME}/wp-content:/var/www/html/wp-content/
       - ./apps/wordpress/php.ini:/usr/local/etc/php/php.ini
     networks:
-      - nw-backend    
+      - nw-backend
 
   nginx:
     image: iiriix/nginx-wp:latest
@@ -144,21 +145,21 @@ volumes:
   wp_data:
     driver: local
     driver_opts:
-       o: bind
-       type: none
-       device: /data/wp_data_${PROJECT_NAME}
+      o: bind
+      type: none
+      device: /data/wp_data_${PROJECT_NAME}
   mysql_data:
     driver: local
     driver_opts:
-       o: bind
-       type: none
-       device: /data/mysql_data_${PROJECT_NAME}
+      o: bind
+      type: none
+      device: /data/mysql_data_${PROJECT_NAME}
   backups:
     driver: local
     driver_opts:
-       o: bind
-       type: none
-       device: /data/backups_${PROJECT_NAME}
+      o: bind
+      type: none
+      device: /data/backups_${PROJECT_NAME}
 
 networks:
   proxy:
