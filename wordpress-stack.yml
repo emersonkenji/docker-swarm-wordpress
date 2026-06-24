@@ -118,7 +118,7 @@ services:
       - nw-backend
 
   db_backup:
-    image: fradelg/mysql-backup:latest
+    image: fradelg/mysql-cron-backup:latest
     deploy:
       replicas: 1
       restart_policy:
