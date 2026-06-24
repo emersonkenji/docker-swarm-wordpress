@@ -23,7 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - /srv/sites/${DOMAIN_NAME}/${MYSQL_DATABASE}:/docker-entrypoint-initdb.d:ro
+      - /srv/sites/${DOMAIN_NAME}/${MYSQL_DATABASE}:/docker-entrypoint-initdb.d/${MYSQL_DATABASE}:ro
     networks:
       - nw-backend
     healthcheck:
