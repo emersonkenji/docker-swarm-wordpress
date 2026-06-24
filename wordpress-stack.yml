@@ -3,6 +3,10 @@ version: "3.7"
 services:
   mysql:
     image: mariadb:latest
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-allowed-packet=64M
     deploy:
       replicas: 1
       restart_policy:
@@ -15,12 +19,17 @@ services:
     environment:
         MYSQL_DATABASE: wordpress
         MYSQL_USER: wordpress
-        MYSQL_PASSWORD: wordpress
-        MYSQL_ROOT_PASSWORD: wordpressroot
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
-      - mysql_data_takadatintas:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     networks:
       - nw-backend
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   wordpress:
     image: wordpress:6.7.1-php8.3-fpm-alpine
@@ -40,16 +49,17 @@ services:
     environment:
         WORDPRESS_DB_HOST: mysql
         WORDPRESS_DB_USER: wordpress
-        WORDPRESS_DB_PASSWORD: wordpress
+        WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
         WORDPRESS_DB_NAME: wordpress
         WORDPRESS_TABLE_PREFIX: wp_
         WORDPRESS_CONFIG_EXTRA: |
-          define('WP_HOME','https://takadatintas.com.br');
-          define('WP_SITEURL','https://takadatintas.com.br');
+          define('WP_HOME','https://${DOMAIN_NAME}');
+          define('WP_SITEURL','https://${DOMAIN_NAME}');
+          define('WP_REDIS_HOST', 'redis');
     depends_on:
       - mysql
     volumes:
-      - wp_data_takadatintas:/var/www/html
+      - wp_data:/var/www/html
       - ./apps/wordpress/php.ini:/usr/local/etc/php/php.ini
     networks:
       - nw-backend    
@@ -69,35 +79,86 @@ services:
         window: 15s
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.nginx_takadatintas.rule=Host(`takadatintas.com.br`, `www.takadatintas.com.br`)"
-        - "traefik.http.routers.nginx_takadatintas.tls.certresolver=le"
-        - "traefik.http.routers.nginx_takadatintas.entrypoints=websecure"
-        - "traefik.http.routers.nginx_takadatintas.tls=true"
-        - "traefik.http.routers.nginx_takadatintas.service=nginx_takadatintas"
-        - "traefik.http.services.nginx_takadatintas.loadbalancer.server.port=80"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`, `www.${DOMAIN_NAME}`)"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.tls.certresolver=le"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.entrypoints=websecure"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.tls=true"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.service=nginx_${PROJECT_NAME}"
+        - "traefik.http.services.nginx_${PROJECT_NAME}.loadbalancer.server.port=80"
     depends_on:
       - wordpress
     volumes:
       - ./apps/nginx/nginx_conf/nginx.conf:/etc/nginx/nginx.conf
       - ./apps/nginx/nginx_conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf
-      - wp_data_takadatintas:/var/www/html
+      - wp_data:/var/www/html
     networks:
       - nw-backend
       - proxy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: any
+        delay: 10s
+        max_attempts: 5
+        window: 15s
+      labels:
+        - "traefik.enable=false"
+    networks:
+      - nw-backend
+
+  db_backup:
+    image: fradelg/mysql-backup:latest
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 5
+        window: 15s
+      labels:
+        - "traefik.enable=false"
+    environment:
+      DB_HOST: mysql
+      DB_USER: wordpress
+      DB_PASS: ${MYSQL_PASSWORD}
+      DB_NAMES: wordpress
+      DB_DUMP_FREQ: 1440
+      DB_DUMP_BEGIN: "0300"
+      DB_CLEANUP_TIME: 10080
+    volumes:
+      - backups:/backup
+    networks:
+      - nw-backend
+    depends_on:
+      - mysql
 
 volumes:
-  wp_data_takadatintas:
+  wp_data:
     driver: local
     driver_opts:
        o: bind
        type: none
-       device: /data/wp_data_takadatintas
-  mysql_data_takadatintas:
+       device: /data/wp_data_${PROJECT_NAME}
+  mysql_data:
     driver: local
     driver_opts:
        o: bind
        type: none
-       device: /data/mysql_data_takadatintas
+       device: /data/mysql_data_${PROJECT_NAME}
+  backups:
+    driver: local
+    driver_opts:
+       o: bind
+       type: none
+       device: /data/backups_${PROJECT_NAME}
 
 networks:
   proxy:
