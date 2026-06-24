@@ -17,13 +17,13 @@ services:
       labels:
         - "traefik.enable=false"
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_DATABASE: ${MYSQL_USER}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
-      - /srv/sites/${DOMAIN_NAME}/${MYSQL_DATABASE}:/docker-entrypoint-initdb.d/${MYSQL_DATABASE}:ro
+      - /srv/sites/${DOMAIN_NAME}/${BACKUP_DATABASE}:/docker-entrypoint-initdb.d/${BACKUP_DATABASE}:ro
     networks:
       - nw-backend
     healthcheck:
@@ -51,7 +51,7 @@ services:
       WORDPRESS_DB_HOST: mysql
       WORDPRESS_DB_USER: ${MYSQL_USER}
       WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
-      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+      WORDPRESS_DB_NAME: ${MYSQL_USER}
       WORDPRESS_TABLE_PREFIX: ${WORDPRESS_TABLE_PREFIX}
       # WORDPRESS_CONFIG_EXTRA: |
       #   define('WP_HOME','https://${DOMAIN_NAME}');
@@ -132,7 +132,7 @@ services:
       DB_HOST: mysql
       DB_USER: ${MYSQL_USER}
       DB_PASS: ${MYSQL_PASSWORD}
-      DB_NAMES: ${MYSQL_DATABASE}
+      DB_NAMES: ${MYSQL_USER}
       DB_DUMP_FREQ: 1440
       DB_DUMP_BEGIN: "0300"
       DB_CLEANUP_TIME: 10080
