@@ -96,9 +96,9 @@ services:
       - nw-backend
       - proxy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost/"]
-      interval: 15s
-      timeout: 5s
+      test: ["CMD", "pidof", "nginx"]
+      interval: 10s
+      timeout: 3s
       retries: 3
 
   redis:
