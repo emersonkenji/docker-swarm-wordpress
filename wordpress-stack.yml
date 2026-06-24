@@ -32,7 +32,7 @@ services:
       retries: 5
 
   wordpress:
-    image: wordpress:6.7.1-php8.3-fpm-alpine
+    image: wordpress:7.0.0-php8.3-fpm-alpine
     deploy:
       replicas: 1
       update_config:
@@ -60,7 +60,7 @@ services:
       - mysql
     volumes:
       - wp_data:/var/www/html
-      - ./srv/sites/${DOMAIN_NAME}/wp-content:/var/www/html/wp-content/
+      - /srv/sites/${DOMAIN_NAME}/wp-content:/var/www/html/wp-content/
       - ./apps/wordpress/php.ini:/usr/local/etc/php/php.ini
     networks:
       - nw-backend
