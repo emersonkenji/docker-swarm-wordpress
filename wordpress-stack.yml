@@ -62,6 +62,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - /srv/sites/${DOMAIN_NAME}/wp-content:/var/www/html/wp-content/
+      - /srv/sites/${DOMAIN_NAME}/wp-config.php:/var/www/html/wp-config.php
       - ./apps/wordpress/php.ini:/usr/local/etc/php/php.ini
     networks:
       - nw-backend
