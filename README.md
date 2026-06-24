@@ -92,13 +92,27 @@ WORDPRESS_TABLE_PREFIX=wpog_
 
 Se você já possui um backup de banco de dados e deseja importá-lo automaticamente ao subir a stack pela primeira vez:
 
-1. Crie a pasta de importação na VPS com o nome do seu domínio e do seu banco de dados:
+1. Coloque o seu arquivo de backup `.sql` ou `.sql.gz` na VPS no seguinte caminho:
    ```bash
-   # Exemplo: /srv/sites/takadatintas.com.br/takadatintas.sql/
-   mkdir -p /srv/sites/${DOMAIN_NAME}/${MYSQL_DATABASE}
+   # Exemplo: /srv/sites/takadatintas.com.br/takadatintas.sql
+   /srv/sites/${DOMAIN_NAME}/${BACKUP_DATABASE}
    ```
-2. Coloque o seu arquivo de backup (`.sql` ou `.sql.gz`) dentro dessa pasta.
-3. Quando a stack for iniciada pela primeira vez (e a pasta `/data/mysql_data_...` estiver vazia), o MariaDB importará este arquivo de banco automaticamente.
+2. Quando a stack for iniciada pela primeira vez (e a pasta `/data/mysql_data_...` estiver vazia), o MariaDB importará este arquivo de banco automaticamente.
+
+> ⚠️ **IMPORTANTE (Erro de Permissão / Permission Denied):**
+> O banco de dados MariaDB/MySQL executa com um usuário interno (`mysql`) sem privilégios de administrador. Você **deve** liberar a permissão de leitura nos arquivos e de execução nas pastas de origem na sua VPS, caso contrário o container falhará ao iniciar com o erro `Permission denied`.
+> 
+> Execute os comandos abaixo no terminal da sua VPS para ajustar as permissões:
+> ```bash
+> # Substitua "takadatintas.com.br" e "takadatintas.sql" pelos valores do seu .env
+> sudo chmod 755 /srv/sites
+> sudo chmod 755 /srv/sites/takadatintas.com.br
+> sudo chmod 644 /srv/sites/takadatintas.com.br/takadatintas.sql
+> 
+> # Se tiver problemas de permissão com o wp-config.php ou pasta wp-content:
+> sudo chmod 644 /srv/sites/takadatintas.com.br/wp-config.php
+> sudo chmod -R 755 /srv/sites/takadatintas.com.br/wp-content
+> ```
 
 ---
 
