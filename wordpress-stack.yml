@@ -80,7 +80,7 @@ services:
         window: 15s
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.nginx_${PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`, `www.${DOMAIN_NAME}`)"
+        - "traefik.http.routers.nginx_${PROJECT_NAME}.rule=Host(`${DOMAIN_NAME}`) || Host(`www.${DOMAIN_NAME}`)"
         - "traefik.http.routers.nginx_${PROJECT_NAME}.tls.certresolver=le"
         - "traefik.http.routers.nginx_${PROJECT_NAME}.entrypoints=websecure"
         - "traefik.http.routers.nginx_${PROJECT_NAME}.tls=true"
