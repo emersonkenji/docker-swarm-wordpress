@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   traefik:
-    image: traefik:3.2
+    image: traefik:3.7
     deploy:
       replicas: 1
       update_config:
@@ -19,7 +19,6 @@ services:
           - node.role == manager
     command:
       - --providers.docker=true
-      - --providers.docker.swarmMode=true
       - --providers.docker.exposedbydefault=false
       - --providers.docker.network=proxy
       - --providers.docker.endpoint=unix:///var/run/docker.sock
@@ -50,9 +49,9 @@ volumes:
   letsencrypt_data:
     driver: local
     driver_opts:
-       o: bind
-       type: none
-       device: /data/letsencrypt_data
+      o: bind
+      type: none
+      device: /data/letsencrypt_data
 
 networks:
   proxy:
