@@ -7,6 +7,7 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --max-allowed-packet=64M
+      - --innodb_buffer_pool_size=256M
     deploy:
       replicas: 1
       restart_policy:
@@ -33,7 +34,7 @@ services:
       retries: 5
 
   wordpress:
-    image: wordpress:7.0.0-php8.3-fpm-alpine
+    image: wordpress:php8.3-fpm
     deploy:
       replicas: 1
       update_config:

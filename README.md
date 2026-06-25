@@ -173,3 +173,33 @@ docker service logs -f takadatintas_wordpress_mysql
 docker service scale takadatintas_wordpress_nginx=3
 docker service scale takadatintas_wordpress_wordpress=3
 ```
+
+---
+
+## 🧹 Derrubar Tudo e Começar do Zero (Reset Completo)
+
+Se você precisa limpar a instalação completamente (apagando o banco de dados e os arquivos para uma instalação limpa), siga os passos abaixo com **EXTREMO CUIDADO**, pois **isto apagará todos os dados dos volumes**:
+
+1. Pare a stack do WordPress e aguarde os containers encerrarem:
+   ```bash
+   # O nome da stack geralmente é ${PROJECT_NAME}_wordpress
+   docker stack rm takadatintas_wordpress
+   
+   # Aguarde alguns segundos para os serviços sumirem completamente
+   ```
+
+2. Remova os volumes (Isso apaga o Banco de Dados, Arquivos WP e Backups localizados no volume do Docker!):
+   ```bash
+   # Substitua takadatintas pelo seu PROJECT_NAME caso diferente
+   docker volume rm takadatintas_wordpress_wp_data
+   docker volume rm takadatintas_wordpress_mysql_data
+   docker volume rm takadatintas_wordpress_backups
+   ```
+
+3. (Opcional) Limpe os arquivos da pasta host caso tenha colocado conteúdos nela:
+   ```bash
+   sudo rm -rf /srv/sites/takadatintas.com.br/wp-content/*
+   ```
+
+Após isso, você pode rodar o deploy novamente para uma instalação fresca!
+
