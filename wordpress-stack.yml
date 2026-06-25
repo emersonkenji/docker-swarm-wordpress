@@ -95,6 +95,7 @@ services:
       - ./apps/nginx/nginx_conf/nginx.conf:/etc/nginx/nginx.conf
       - ./apps/nginx/nginx_conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf
       - wp_data:/var/www/html
+      - /srv/sites/${DOMAIN_NAME}/wp-content:/var/www/html/wp-content/
     networks:
       - nw-backend
       - proxy

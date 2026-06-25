@@ -112,6 +112,8 @@ Se você já possui um backup de banco de dados e deseja importá-lo automaticam
 > # Se tiver problemas de permissão com o wp-config.php ou pasta wp-content:
 > sudo chmod 644 /srv/sites/takadatintas.com.br/wp-config.php
 > sudo chmod -R 755 /srv/sites/takadatintas.com.br/wp-content
+> # Essencial para plugins de cache (como WP Rocket) conseguirem gravar arquivos:
+> sudo chown -R 33:33 /srv/sites/takadatintas.com.br/wp-content
 > ```
 
 ---
